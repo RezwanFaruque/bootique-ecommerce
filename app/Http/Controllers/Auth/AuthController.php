@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 
@@ -54,5 +55,47 @@ class AuthController extends Controller
            
 
         return response()->json($data, 200);
+    }
+
+
+    // user login functionality
+    public function userLogin(Request $request){
+
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8'
+        ]);
+
+        
+        $user = User::where('email' , $request->email)->first();
+
+
+        $password = Hash::check($request->password, $user->password);
+
+        
+
+        if($user && $password){
+
+            
+            $token = $user->createToken('authToken')->accessToken;
+
+            $data = [
+                'status' => 'success',
+                'message' => 'You logged in successfully!',
+                'token' => $token,
+            ];
+
+            return response()->json($data, 200);
+        }else{
+
+            $data = [
+                'status' => 'error',
+                'message' => 'Login fail!',
+                
+            ];
+
+            return response()->json($data, 200);
+        }
+
     }
 }

@@ -17,6 +17,8 @@ use App\Http\Controllers\Auth\AuthController;
 Route::controller(AuthController::class)->group(function(){
 
     Route::post('/register','userRegistration')->name('user.registration');
+
+    Route::post('/login' , 'userLogin')->name('user.login');
     
 
 });
