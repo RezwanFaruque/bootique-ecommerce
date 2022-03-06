@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\Tailor;
 
 class AuthController extends Controller
 {
@@ -44,6 +46,17 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'user_type' => $request->user_type,
             ]);
+
+            $customer = new Customer();
+            $tailor = new Tailor();
+
+            $customer->user_id = $user->id;
+            $tailor->user_id = $user->id;
+
+            $customer->save();
+            $tailor->save();
+
+
 
             $data = [
                 'status' => 'success',
