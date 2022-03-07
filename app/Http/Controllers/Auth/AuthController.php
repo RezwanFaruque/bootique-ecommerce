@@ -71,7 +71,7 @@ class AuthController extends Controller
     }
 
 
-    // user login functionality
+    // user login functionality for api
     public function userLogin(Request $request){
 
         $request->validate([
@@ -110,5 +110,37 @@ class AuthController extends Controller
             return response()->json($data, 200);
         }
 
+    }
+
+
+    // user login functionality for web
+    public function logingUser(Request $request){
+
+        
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8'
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+ 
+            return redirect()->intended('/dashboard');
+        }
+ 
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
+
+    public function userlogout(Request $request){
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        return redirect('/');
     }
 }
